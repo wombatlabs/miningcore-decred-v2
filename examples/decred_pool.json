@@ -1,0 +1,130 @@
+{
+   "logging": {
+      "level": "info",
+      "enableConsoleLog": true,
+      "enableConsoleColors": true,
+      "logFile": "",
+      "apiLogFile": "",
+      "logBaseDirectory": "",
+      "perPoolLogFile": false
+   },
+   "banning": {
+      "manager": "Integrated",
+      "banOnJunkReceive": true,
+      "banOnInvalidShares": false
+   },
+   "notifications": {
+      "enabled": false,
+      "email": {
+         "host": "smtp.gmail.com",
+         "port": 587,
+         "user": "support@domain.tld",
+         "password": "APP_PASSWORD",
+         "fromAddress": "support@domain.tld",
+         "fromName": "domain.tld"
+      },
+      "admin": {
+         "enabled": false,
+         "emailAddress": "support@domain.tld",
+         "notifyBlockFound": true
+      }
+   },
+   "persistence": {
+      "postgres": {
+         "host": "127.0.0.1",
+         "port": 5432,
+         "user": "miningcore",
+         "password": "PASSWORD",
+         "database": "miningcore"
+      }
+   },
+   "paymentProcessing": {
+      "enabled": true,
+      "interval": 600,
+      "shareRecoveryFile": "recovered-shares.txt"
+   },
+   "api": {
+      "enabled": true,
+      "listenAddress": "*",
+      "port": 4000,
+      "adminIpWhitelist": [],
+      "metricsIpWhitelist": [],
+      "rateLimiting": {
+         "disabled": true,
+         "rules": [
+            {
+               "Endpoint": "*",
+               "Period": "1s",
+               "Limit": 5
+            }
+         ],
+         "ipWhitelist": [
+            ""
+         ]
+      }
+   },
+   "pools": [
+      {
+         "id": "dcr",
+         "enabled": true,
+         "coin": "decred",
+         "address": "DsgtH6CdzrKGbhMzeFKTrRfrBCYvM9WaENP",
+         "rewardRecipients": [
+            {
+               "address": "DsRWFJ3HS8CXr6bduCTnqhvwRstAFFYoqVh",
+               "percentage": 1.0
+            }
+         ],
+         "blockRefreshInterval": 600,
+         "jobRebroadcastTimeout": 0,
+         "clientConnectionTimeout": 1000,
+         "banning": {
+            "enabled": true,
+            "time": 600,
+            "invalidPercent": 50,
+            "checkThreshold": 50
+         },
+         "ports": {
+            "3333": {
+               "name": "GPU",
+               "listenAddress": "0.0.0.0",
+               "difficulty": 128,
+               "varDiff": {
+                  "minDiff": 16,
+                  "maxDiff": null,
+                  "targetTime": 15,
+                  "retargetTime": 90,
+                  "variancePercent": 30
+               }
+            }
+         },
+         "daemons": [
+            {
+               "host": "127.0.0.1",
+               "port": 9109,
+               "user": "USERNAME",
+               "password": "PASSWORD"
+            },
+            {
+               "host": "127.0.0.1",
+               "port": 9110,
+               "user": null,
+               "password": null,
+               "category": "wallet"
+            }
+         ],
+         "paymentProcessing": {
+            "enabled": true,
+            "walletPassword": "PASSWORD",
+            "minimumPayment": 0.001,
+            "payoutScheme": "SOLO",
+            "payoutSchemeConfig": {
+               "factor": 0.5
+            }
+         },
+         "extra": { 
+            "addressType": "Decred"
+        }
+      }
+   ]
+}

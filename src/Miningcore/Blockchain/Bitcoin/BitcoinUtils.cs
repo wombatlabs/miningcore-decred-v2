@@ -53,4 +53,24 @@ public static class BitcoinUtils
         Debug.Assert(result.GetAddress(litecoin).ToString() == address);
         return result;
     }
+
+    public static IDestination DecredAddressToDestination(string address, Network expectedNetwork)
+    {
+        try
+        {
+            var data = Encoders.Base58.DecodeData(address);
+
+            if(data.Length < 22)
+                throw new FormatException("Invalid Decred address (too short)");
+
+            var hash160 = new byte[20];
+            Array.Copy(data, 2, hash160, 0, 20);
+
+            return new KeyId(hash160);
+        }
+        catch(Exception)
+        {
+            throw new FormatException("Invalid Decred address format");
+        }
+    }
 }

@@ -24,6 +24,11 @@ public enum BitcoinAddressType
     /// Litecoin
     /// </summary>
     Litecoin,
+
+    /// <summary>
+    /// Decred
+    /// </summary>
+    Decred,
 }
 
 public enum BitcoinTransactionCategory

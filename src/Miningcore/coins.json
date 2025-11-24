@@ -792,6 +792,37 @@
         "explorerTxLink": "https://explorer.datromax.com/tx/{0}",
         "explorerAccountLink": "https://explorer.datromax.com/address/{0}"
     },
+    "decred": {
+        "name": "Decred",
+        "canonicalName": "Decred",
+        "symbol": "DCR",
+        "family": "bitcoin",
+        "website": "https://decred.org/",
+        "github": "https://github.com/decred/dcrd",
+        "market": "https://www.coingecko.com/en/coins/decred",
+        "twitter": "",
+        "telegram": "",
+        "discord": "",
+        "coinbaseHasher": {
+            "hash": "blake"
+        },
+        "headerHasher": {
+            "hash": "blake3"
+        },
+        "blockHasher": {
+            "hash": "reverse",
+            "args": [
+                {
+                    "hash": "blake"
+                }
+            ]
+        },
+        "shareMultiplier": 60000000000,
+        "hasMasterNodes": false,
+        "explorerBlockLink": "https://dcrdata.decred.org/block/$height$",
+        "explorerTxLink": "https://dcrdata.decred.org/tx/{0}",
+        "explorerAccountLink": "https://dcrdata.decred.org/address/{0}"
+    },
     "digibyte-sha256": {
         "name": "Digibyte Sha256",
         "canonicalName": "Digibyte",
