@@ -15,6 +15,8 @@ using NBitcoin.DataEncoders;
 using Newtonsoft.Json.Linq;
 using Contract = Miningcore.Contracts.Contract;
 using Transaction = NBitcoin.Transaction;
+using Microsoft.AspNetCore.Mvc;
+using Miningcore.Rpc;
 
 namespace Miningcore.Blockchain.Bitcoin;
 
@@ -33,7 +35,7 @@ public class BitcoinJob
     protected Network network;
     protected IDestination poolAddressDestination;
     protected BitcoinTemplate coin;
-    private BitcoinTemplate.BitcoinNetworkParams networkParams;
+    protected BitcoinTemplate.BitcoinNetworkParams networkParams;
     protected readonly ConcurrentDictionary<string, bool> submissions = new(StringComparer.OrdinalIgnoreCase);
     protected uint256 blockTargetValue;
     protected byte[] coinbaseFinal;
@@ -835,7 +837,7 @@ public class BitcoinJob
     public double Difficulty { get; protected set; }
 
     public string JobId { get; protected set; }
-
+    
     public virtual async Task InitLegacy(BlockTemplate bt, string jobId,
         PoolConfig pc, BitcoinPoolConfigExtra extraPoolConfig,
         ClusterConfig cc, IMasterClock clock,
