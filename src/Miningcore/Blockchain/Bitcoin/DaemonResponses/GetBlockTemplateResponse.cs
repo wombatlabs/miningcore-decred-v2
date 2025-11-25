@@ -97,6 +97,12 @@ public class BlockTemplate
     [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
     public long CommunityAutonomousValue { get; set; }
 
+    /// <summary>
+    /// Raw block template hex data (used by Decred)
+    /// </summary>
+    [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
+    public string Hex { get; set; }
+
     [JsonExtensionData]
     public IDictionary<string, object> Extra { get; set; }
 }
