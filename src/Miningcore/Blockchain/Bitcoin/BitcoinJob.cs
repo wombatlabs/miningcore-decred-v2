@@ -836,6 +836,80 @@ public class BitcoinJob
 
     public string JobId { get; protected set; }
 
+    public virtual async Task InitLegacy(BlockTemplate bt, string jobId,
+        PoolConfig pc, BitcoinPoolConfigExtra extraPoolConfig,
+        ClusterConfig cc, IMasterClock clock,
+        IDestination poolAddressDestination, Network network,
+        bool isPoS, double shareMultiplier, IHashAlgorithm coinbaseHasher,
+        IHashAlgorithm headerHasher, IHashAlgorithm blockHasher, RpcClient rpc)
+    {
+        Contract.RequiresNonNull(bt);
+        Contract.RequiresNonNull(pc);
+        Contract.RequiresNonNull(cc);
+        Contract.RequiresNonNull(clock);
+        Contract.RequiresNonNull(poolAddressDestination);
+        Contract.RequiresNonNull(coinbaseHasher);
+        Contract.RequiresNonNull(headerHasher);
+        Contract.RequiresNonNull(blockHasher);
+        Contract.Requires<ArgumentException>(!string.IsNullOrEmpty(jobId));
+
+        coin = pc.Template.As<BitcoinTemplate>();
+        networkParams = coin.GetNetwork(network.ChainName);
+        txVersion = coin.CoinbaseTxVersion;
+        this.network = network;
+        this.clock = clock;
+        this.poolAddressDestination = poolAddressDestination;
+        BlockTemplate = bt;
+        JobId = jobId;
+
+        var coinbaseString = !string.IsNullOrEmpty(cc.PaymentProcessing?.CoinbaseString) ?
+            cc.PaymentProcessing?.CoinbaseString.Trim() : "Miningcore";
+
+        scriptSigFinalBytes = new Script(Op.GetPushOp(Encoding.UTF8.GetBytes(coinbaseString))).ToBytes();
+
+        Difficulty = new Target(System.Numerics.BigInteger.Parse(bt.Target, NumberStyles.HexNumber)).Difficulty;
+
+        extraNoncePlaceHolderLength = BitcoinConstants.ExtranoncePlaceHolderLength;
+        this.isPoS = isPoS;
+        this.shareMultiplier = shareMultiplier;
+
+        txComment = !string.IsNullOrEmpty(extraPoolConfig?.CoinbaseTxComment) ?
+            extraPoolConfig.CoinbaseTxComment : coin.CoinbaseTxComment;
+
+        this.coinbaseHasher = coinbaseHasher;
+        this.headerHasher = headerHasher;
+        this.blockHasher = blockHasher;
+
+        if(!string.IsNullOrEmpty(BlockTemplate.Target))
+            blockTargetValue = new uint256(BlockTemplate.Target);
+        else
+        {
+            var tmp = new Target(BlockTemplate.Bits.HexToByteArray());
+            blockTargetValue = tmp.ToUInt256();
+        }
+
+        previousBlockHashReversedHex = BlockTemplate.PreviousBlockhash
+            .HexToByteArray()
+            .ReverseByteOrder()
+            .ToHexString();
+
+        BuildMerkleBranches();
+        BuildCoinbase();
+
+        jobParams = new object[]
+        {
+            JobId,
+            previousBlockHashReversedHex,
+            coinbaseInitialHex,
+            coinbaseFinalHex,
+            merkleBranchesHex,
+            BlockTemplate.Version.ToStringHex8(),
+            BlockTemplate.Bits,
+            BlockTemplate.CurTime.ToStringHex8(),
+            false
+        };
+    }
+
     public void Init(BlockTemplate blockTemplate, string jobId,
         PoolConfig pc, BitcoinPoolConfigExtra extraPoolConfig,
         ClusterConfig cc, IMasterClock clock,
