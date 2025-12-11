@@ -187,6 +187,11 @@ public class DecredJobManager : BitcoinJobManager
 
         var coinbaseValue = await FetchDecredPowRewardAsync(height, voters, ct);
 
+        var targetHex = work.Target;
+
+        if(!string.IsNullOrEmpty(targetHex))
+            targetHex = targetHex.HexToByteArray().ReverseByteOrder().ToHexString();
+
         return new BlockTemplate
         {
             Hex = work.Data,
@@ -195,7 +200,7 @@ public class DecredJobManager : BitcoinJobManager
             Bits = bits.ToString("x8", CultureInfo.InvariantCulture),
             CurTime = nTime,
             Height = height,
-            Target = work.Target,
+            Target = targetHex,
             CoinbaseValue = coinbaseValue,
             Transactions = Array.Empty<BitcoinBlockTransaction>()
         };
